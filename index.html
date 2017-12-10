@@ -37,10 +37,17 @@
         sound.play();
       })
 
+      var analyser = new THREE.AudioAnalyser( sound, 32 );
+
+      //Get the average frequency of the sound
 
       var update = function () {
         cube.rotation.x += 0.01;
         cube.rotation.y += 0.01;
+        console.log(analyser.getAverageFrequency())
+        var scale = analyser.getAverageFrequency() / 200;
+
+        cube.scale.set(scale + 1, scale + 1, scale + 1);
       };
 
       var render = function () {
