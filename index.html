@@ -8,7 +8,7 @@
   </head>
   <body>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/88/three.min.js"> </script>
-    <div id="info" style= "position: absolute; top: 20px; right: 0px; width: 175px; color: white; font-family: 'Verdana', sans-serif; font-size: 20px;">Now Playing:<br>&nbsp;Verdis Quo</div>
+    <div id="info" style= "position: absolute; top: 20px; right: 0px; width: 175px; color: white; font-family: 'Verdana', sans-serif; font-size: 20px;">Now Playing:<br>&nbsp;&nbsp;i miss you</div>
 
     <script>
 
@@ -21,10 +21,15 @@
 
       // create geometry
       var geometry = new THREE.BoxGeometry( 1, 1, 1 );
-      var material = new THREE.MeshBasicMaterial( {color: 0xFFFFFF, wireframe: false });
-      var cube = new THREE.Mesh( geometry, material );
-      scene.add(cube);
-      camera.position.z = 3;
+      var material = new THREE.MeshBasicMaterial( {color: 0xFFFFFF, wireframe: true });
+
+      var cubes = [];
+      for (var i = 0; i < 13; i++) {
+        var cube = new THREE.Mesh( geometry, material );
+        scene.add(cube);
+        camera.position.z = 7;
+        cubes.push(cube);
+      }
 
 
       var listener = new THREE.AudioListener();
@@ -32,7 +37,7 @@
       var sound = new THREE.Audio(listener);
       var audioLoader = new THREE.AudioLoader();
 
-      audioLoader.load('media/VerdisQuo.mp3', function (buffer) {
+      audioLoader.load('media/imissyou.mp3', function (buffer) {
         sound.setBuffer(buffer);
         sound.setLoop(true);
         sound.setVolume(0.5);
@@ -44,12 +49,19 @@
       //Get the average frequency of the sound
 
       var update = function () {
-        cube.rotation.x += 0.01;
-        cube.rotation.y += 0.01;
-        console.log(analyser.getAverageFrequency())
-        var scale = analyser.getAverageFrequency() / 200;
 
-        cube.scale.set(scale + 1, scale + 1, scale + 1);
+        var i = 0;
+
+        var scale = analyser.getFrequencyData();
+        for (var i=0; i < cubes.length; i++) {
+
+          cubes[i].rotation.x = 0;
+          cubes[i].rotation.y = 0;
+          cubes[i].scale.set(1, scale[i]/100 + 1, scale[i]/50 + 1);
+          cubes[i].position.x = (i - 5);
+        }
+        var frequencyData;
+
       };
 
       var render = function () {
